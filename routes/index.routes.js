@@ -51,8 +51,13 @@ router.post('/authenticate', async (req, res) => {
 });
 
 // Restricted route
-router.get('/protected', checkToken, (req, res) => {
-	res.send('Hello super nintendo charmers');
+router.get('/protected', checkToken, async (req, res) => {
+	try {
+		res.send('Hello super nintendo charmers');
+	} catch (error) {
+		res.status(403);
+	}
+	// if (err) res.send({ err: err, msg: 'something went wrong' });
 });
 
 module.exports = router;
