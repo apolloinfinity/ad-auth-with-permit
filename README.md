@@ -1,2 +1,2 @@
-# ad-auth-with-permit" 
+# ad-auth-with-permit
 
