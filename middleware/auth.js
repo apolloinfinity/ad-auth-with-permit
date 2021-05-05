@@ -1,4 +1,5 @@
-const { Bearer, Basic } = require('permit');
+const { Bearer } = require('permit');
+const jwt = require('jsonwebtoken');
 
 const permit = new Bearer({
 	basic: 'username',
@@ -6,14 +7,23 @@ const permit = new Bearer({
 });
 
 module.exports = {
-	checkToken: (req, res, next) => {
-		const token = permit.check(req);
-		if (!token) {
-			permit.fail(res);
-			return next(new Error('Authentication failed!'));
-		}
+	checkToken: async (req, res, next) => {
+		try {
+			const token = permit.check(req);
+			if (!token) {
+				return res.status(401).json({
+					success: false,
+					msg: 'Authentication is required',
+				});
+			}
 
-		console.log(token);
-		res.send('Hello');
+			let payload = jwt.verify(token, process.env.SECRET);
+
+			console.log(payload);
+			res.send('Hello');
+			next();
+		} catch (error) {
+			res.status(401).json({ err: error });
+		}
 	},
 };
